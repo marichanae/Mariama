@@ -1,0 +1,28 @@
+.page-shell {
+  @apply min-h-screen bg-background text-gray-100 flex flex-col;
+}
+
+.page-container {
+  @apply max-w-5xl mx-auto px-4 py-8 flex-1 w-full;
+}
+
+.card-surface {
+  @apply bg-surface/80 border border-white/5 rounded-xl shadow-lg shadow-black/60 backdrop-blur-sm transition-shadow duration-200;
+}
+
+@keyframes subtle-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.96; }
+}
+
+.glow-accent {
+  box-shadow: 0 0 25px rgba(185, 28, 28, 0.45);
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-full bg-accent-blood px-5 py-2 text-sm font-semibold tracking-wide text-white shadow-md shadow-red-900/40 transition hover:bg-red-700 hover:shadow-red-900/70;
+}
+
+.section-title {
+  @apply text-3xl font-semibold tracking-tight text-white mb-4;
+}
