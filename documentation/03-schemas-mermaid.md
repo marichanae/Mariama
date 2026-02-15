@@ -66,50 +66,57 @@ flowchart TB
 
 ```mermaid
 flowchart LR
-  PUSH["🔀 git push / PR\nsur main"] --> TRIGGER{"Path filter"}
-  TRIGGER -->|"backend/**"| BACK_CI
-  TRIGGER -->|"frontend/**"| FRONT_CI
+  PUSH["🔀 git push"] --> FILTER{"Path?"}
 
-  subgraph BACK_CI["⚙️ Backend CI — build-and-test"]
-    direction LR
-    BC1["📥 Checkout + Node 22"] --> BC2["📦 npm ci"]
-    BC2 --> BC3["🗄️ Prisma migrate"]
-    BC3 --> BC4["⚡ Prisma generate"]
-    BC4 --> BC5["🧪 Tests Jest"]
-    BC5 --> BC6["🧪 Tests E2E"]
-    BC6 --> BC7["🏗️ Build TS"]
+  FILTER -->|"backend/**"| B_CI["⚙️ CI Backend"]
+  FILTER -->|"frontend/**"| F_CI["⚙️ CI Frontend"]
+
+  subgraph B_CI["⚙️ CI Backend"]
+    direction TB
+    B1[Checkout + Node 22]
+    B2[npm ci]
+    B3[Prisma migrate + generate]
+    B4[Tests unitaires Jest]
+    B5[Tests E2E Supertest]
+    B6[Build TypeScript]
+    B1 --> B2 --> B3 --> B4 --> B5 --> B6
   end
 
-  BC7 -->|"✅ Quality Gate"| GATE{"🚦 Gate"}
+  B_CI --> GATE{"🚦 Quality Gate"}
   GATE -->|"❌ Fail"| STOP["🛑 Bloqué"]
-  GATE -->|"✅ Pass + main"| BACK_CD
+  GATE -->|"✅ Pass"| B_CD
 
-  subgraph BACK_CD["🚀 Backend CD — deploy"]
-    direction LR
-    BD1["📦 npm ci + build"] --> BD2["✂️ prune"]
-    BD2 --> BD3["🔐 Azure Login"]
-    BD3 --> BD4["🗄️ Prisma migrate"]
-    BD4 --> BD5["☁️ Deploy"]
+  subgraph B_CD["🚀 CD Backend"]
+    direction TB
+    D1[npm ci + build]
+    D2[npm prune --omit=dev]
+    D3[Azure Login]
+    D4[Prisma migrate prod]
+    D5[Deploy App Service]
+    D1 --> D2 --> D3 --> D4 --> D5
   end
 
-  subgraph FRONT_CI["⚙️ Frontend CI/CD — build-and-deploy"]
-    direction LR
-    FC1["📥 Checkout + Node 22"] --> FC2["📦 npm ci"]
-    FC2 --> FC3["🏗️ Vite build"]
-    FC3 --> FC4["🔐 Azure Login"]
-    FC4 --> FC5["☁️ Deploy"]
+  B_CD --> OK1["💚 Backend live"]
+
+  subgraph F_CI["⚙️ CI/CD Frontend"]
+    direction TB
+    F1[Checkout + Node 22]
+    F2[npm ci]
+    F3[Vite build]
+    F4[Azure Login]
+    F5[Deploy dist/]
+    F1 --> F2 --> F3 --> F4 --> F5
   end
 
-  BD5 --> HEALTH["💚 /health OK"]
-  FC5 --> LIVE["🌐 Frontend live"]
+  F_CI --> OK2["💚 Frontend live"]
 
-  style BACK_CI fill:#161b22,stroke:#f0883e,stroke-width:2px,color:#fff
-  style BACK_CD fill:#161b22,stroke:#3fb950,stroke-width:2px,color:#fff
-  style FRONT_CI fill:#161b22,stroke:#58a6ff,stroke-width:2px,color:#fff
+  style B_CI fill:#161b22,stroke:#f0883e,stroke-width:2px,color:#fff
+  style B_CD fill:#161b22,stroke:#3fb950,stroke-width:2px,color:#fff
+  style F_CI fill:#161b22,stroke:#58a6ff,stroke-width:2px,color:#fff
   style STOP fill:#7f1d1d,stroke:#b91c1c,color:#fca5a5
   style GATE fill:#1c1917,stroke:#fbbf24,stroke-width:2px,color:#fff
-  style HEALTH fill:#052e16,stroke:#3fb950,color:#bbf7d0
-  style LIVE fill:#052e16,stroke:#3fb950,color:#bbf7d0
+  style OK1 fill:#052e16,stroke:#3fb950,color:#bbf7d0
+  style OK2 fill:#052e16,stroke:#3fb950,color:#bbf7d0
 ```
 
 ---
