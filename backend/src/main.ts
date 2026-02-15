@@ -23,8 +23,9 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(3000);
-  console.log(`La Petite Maison de l'Épouvante API est démarrée sur http://localhost:3000`);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`La Petite Maison de l'Épouvante API est démarrée sur le port ${port}`);
 }
 
 bootstrap();
