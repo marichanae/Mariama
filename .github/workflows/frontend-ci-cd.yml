@@ -48,4 +48,4 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_FRONTEND_NAME }}
-          package: dist
+          package: frontend/dist
