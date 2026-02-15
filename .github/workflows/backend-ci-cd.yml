@@ -95,6 +95,9 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Prune dev dependencies
+        run: npm prune --omit=dev
+
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -110,3 +113,5 @@ jobs:
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_BACKEND_NAME }}
           package: ./backend
+        env:
+          SCM_DO_BUILD_DURING_DEPLOYMENT: false
