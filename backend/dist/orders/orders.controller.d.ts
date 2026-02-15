@@ -21,6 +21,7 @@ export declare class OrdersController {
                 description: string;
                 price: number;
                 type: import(".prisma/client").$Enums.ProductType;
+                imageUrl: string | null;
                 createdAt: Date;
                 categoryId: string;
             };
@@ -46,6 +47,7 @@ export declare class OrdersController {
                 description: string;
                 price: number;
                 type: import(".prisma/client").$Enums.ProductType;
+                imageUrl: string | null;
                 createdAt: Date;
                 categoryId: string;
             };
@@ -78,6 +80,7 @@ export declare class OrdersController {
                 description: string;
                 price: number;
                 type: import(".prisma/client").$Enums.ProductType;
+                imageUrl: string | null;
                 createdAt: Date;
                 categoryId: string;
             };

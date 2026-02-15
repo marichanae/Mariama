@@ -13,6 +13,7 @@ export declare class RecommendationsController {
         description: string;
         price: number;
         type: import(".prisma/client").$Enums.ProductType;
+        imageUrl: string | null;
         createdAt: Date;
         categoryId: string;
     }[]>;

@@ -5,4 +5,5 @@ export declare class UpdateProductDto {
     categoryId?: string;
     price?: number;
     type?: ProductType;
+    imageUrl?: string;
 }

@@ -37,4 +37,9 @@ __decorate([
     (0, class_validator_1.IsEnum)(client_1.ProductType),
     __metadata("design:type", String)
 ], CreateProductDto.prototype, "type", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsUrl)(),
+    __metadata("design:type", String)
+], CreateProductDto.prototype, "imageUrl", void 0);
 //# sourceMappingURL=create-product.dto.js.map
