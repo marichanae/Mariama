@@ -65,43 +65,43 @@ flowchart TB
 ## 2. Pipeline CI/CD avec Quality Gates
 
 ```mermaid
-flowchart TB
+flowchart LR
   PUSH["🔀 git push / PR\nsur main"] --> TRIGGER{"Path filter"}
   TRIGGER -->|"backend/**"| BACK_CI
   TRIGGER -->|"frontend/**"| FRONT_CI
 
   subgraph BACK_CI["⚙️ Backend CI — build-and-test"]
-    direction TB
-    BC1["📥 Checkout + Node 22"] --> BC2["📦 npm ci\n(cache: package-lock.json)"]
-    BC2 --> BC3["🗄️ Prisma migrate deploy\n(PostgreSQL 16 service container)"]
+    direction LR
+    BC1["📥 Checkout + Node 22"] --> BC2["📦 npm ci"]
+    BC2 --> BC3["🗄️ Prisma migrate"]
     BC3 --> BC4["⚡ Prisma generate"]
-    BC4 --> BC5["🧪 Tests unitaires\nnpm test (Jest)"]
-    BC5 --> BC6["🧪 Tests E2E\nnpm run test:e2e\n(Jest + Supertest)"]
-    BC6 --> BC7["🏗️ Build TypeScript\nnpm run build"]
+    BC4 --> BC5["🧪 Tests Jest"]
+    BC5 --> BC6["🧪 Tests E2E"]
+    BC6 --> BC7["🏗️ Build TS"]
   end
 
-  BC7 -->|"✅ Quality Gate\ntests pass + build OK"| GATE{"🚦 Gate"}
-  GATE -->|"❌ Fail"| STOP["🛑 Déploiement bloqué"]
-  GATE -->|"✅ Pass + branch main"| BACK_CD
+  BC7 -->|"✅ Quality Gate"| GATE{"🚦 Gate"}
+  GATE -->|"❌ Fail"| STOP["🛑 Bloqué"]
+  GATE -->|"✅ Pass + main"| BACK_CD
 
   subgraph BACK_CD["🚀 Backend CD — deploy"]
-    direction TB
-    BD1["📦 npm ci + generate + build"] --> BD2["✂️ npm prune --omit=dev"]
-    BD2 --> BD3["🔐 Azure Login\n(AZURE_CREDENTIALS)"]
-    BD3 --> BD4["🗄️ Prisma migrate deploy\n(AZURE_DATABASE_URL)"]
-    BD4 --> BD5["☁️ Deploy → App Service\nSCM_DO_BUILD=false"]
+    direction LR
+    BD1["📦 npm ci + build"] --> BD2["✂️ prune"]
+    BD2 --> BD3["🔐 Azure Login"]
+    BD3 --> BD4["🗄️ Prisma migrate"]
+    BD4 --> BD5["☁️ Deploy"]
   end
 
   subgraph FRONT_CI["⚙️ Frontend CI/CD — build-and-deploy"]
-    direction TB
+    direction LR
     FC1["📥 Checkout + Node 22"] --> FC2["📦 npm ci"]
-    FC2 --> FC3["🏗️ Vite build\nVITE_API_URL injecté"]
+    FC2 --> FC3["🏗️ Vite build"]
     FC3 --> FC4["🔐 Azure Login"]
-    FC4 --> FC5["☁️ Deploy dist/ →\nApp Service frontend"]
+    FC4 --> FC5["☁️ Deploy"]
   end
 
-  BD5 --> HEALTH["💚 GET /health\n{status: healthy, db: up}"]
-  FC5 --> LIVE["🌐 Frontend live\npetite-epouvante-frontend.azurewebsites.net"]
+  BD5 --> HEALTH["💚 /health OK"]
+  FC5 --> LIVE["🌐 Frontend live"]
 
   style BACK_CI fill:#161b22,stroke:#f0883e,stroke-width:2px,color:#fff
   style BACK_CD fill:#161b22,stroke:#3fb950,stroke-width:2px,color:#fff
