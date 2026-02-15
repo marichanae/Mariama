@@ -1,6 +1,6 @@
 import { getToken, clearToken } from '../utils/auth';
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();

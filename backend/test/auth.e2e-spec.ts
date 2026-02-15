@@ -5,6 +5,7 @@ import { AppModule } from '../src/app.module';
 
 describe('Auth e2e', () => {
   let app: INestApplication;
+  let email: string;
 
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
@@ -13,6 +14,9 @@ describe('Auth e2e', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    const suffix = Date.now();
+    email = `e2e+${suffix}@example.com`;
   });
 
   afterAll(async () => {
@@ -23,7 +27,7 @@ describe('Auth e2e', () => {
     const res = await request(app.getHttpServer())
       .post('/auth/register')
       .send({
-        email: 'e2e@example.com',
+        email,
         password: 'secret123',
       })
       .expect(201);
@@ -36,7 +40,7 @@ describe('Auth e2e', () => {
     await request(app.getHttpServer())
       .post('/auth/login')
       .send({
-        email: 'e2e@example.com',
+        email,
         password: 'secret123',
       })
       .expect(201);

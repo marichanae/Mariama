@@ -25,7 +25,6 @@ export function Navbar() {
           <span className="text-xs text-gray-500">de l’Épouvante</span>
         </Link>
         <nav className="flex items-center gap-6 text-sm">
-          <Link to="/" className={isActive('/')}>Accueil</Link>
           <Link to="/catalog" className={isActive('/catalog')}>
             Catalogue
           </Link>

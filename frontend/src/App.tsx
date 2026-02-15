@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './index.css';
 import './styles/theme.css';
 import { Navbar } from './components/Navbar';
-import { Home } from './pages/Home';
 import { Catalog } from './pages/Catalog';
 import { Profile } from './pages/Profile';
 import { Cart } from './pages/Cart';
@@ -36,7 +35,7 @@ function App() {
         <Navbar />
         <main className="page-container">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Catalog />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
             <Route path="/catalog" element={<Catalog />} />

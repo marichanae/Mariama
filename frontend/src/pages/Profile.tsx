@@ -43,27 +43,34 @@ export function Profile() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [recommendations, setRecommendations] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersError, setOrdersError] = useState<string | null>(null);
 
   useEffect(() => {
     apiClient
       .get<UserProfile>('/users/me')
       .then(setProfile)
-      .catch((e) => console.error(e));
+      .catch((e) => console.error('[Profile] /users/me error:', e));
 
     apiClient
       .get<Category[]>('/categories')
       .then(setCategories)
-      .catch(() => {});
+      .catch((e) => console.error('[Profile] /categories error:', e));
 
     apiClient
       .get<Product[]>('/recommendations')
       .then(setRecommendations)
-      .catch(() => {});
+      .catch((e) => console.error('[Profile] /recommendations error:', e));
 
     apiClient
       .get<Order[]>('/orders/me')
-      .then(setOrders)
-      .catch(() => {});
+      .then((data) => {
+        console.log('[Profile] /orders/me returned', data.length, 'orders');
+        setOrders(data);
+      })
+      .catch((e) => {
+        console.error('[Profile] /orders/me error:', e);
+        setOrdersError('Impossible de charger vos commandes.');
+      });
   }, []);
 
   const toggleInterest = async (categoryId: string) => {
@@ -139,9 +146,11 @@ export function Profile() {
 
       <div className="card-surface p-6 flex flex-col gap-4 hover:shadow-2xl hover:shadow-black/70 transition-shadow">
         <h2 className="text-sm font-semibold text-white mb-1">Mes invocations passées</h2>
-        {orders.length === 0 ? (
+        {ordersError ? (
+          <p className="text-xs text-red-400">{ordersError}</p>
+        ) : orders.length === 0 ? (
           <p className="text-xs text-gray-400">
-            Aucune commande n’a encore été scellée dans les registres de la maison.
+            Aucune commande n'a encore été scellée dans les registres de la maison.
           </p>
         ) : (
           <div className="flex flex-col gap-3 max-h-72 overflow-auto text-xs text-gray-200">

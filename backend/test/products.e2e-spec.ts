@@ -17,8 +17,9 @@ describe('Products e2e', () => {
     prisma = app.get(PrismaService);
     await app.init();
 
+    const uniqueName = `Horreur Classique ${Date.now()}`;
     const category = await prisma.category.create({
-      data: { name: 'Horreur Classique' },
+      data: { name: uniqueName },
     });
 
     await prisma.product.create({
