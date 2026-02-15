@@ -1,0 +1,8 @@
+{
+  "defaultHostName": "petite-epouvante-backend-eyeqefcvanhrfphx.francecentral-01.azurewebsites.net",
+  "httpsOnly": true,
+  "kind": "app,linux",
+  "location": "France Central",
+  "name": "petite-epouvante-backend",
+  "state": "Running"
+}

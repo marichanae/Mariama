@@ -1,0 +1,14 @@
+
+> backend@1.0.0 test
+> jest
+
+PASS test/recommendations.service.spec.ts
+PASS test/orders.service.spec.ts
+PASS test/products.service.spec.ts
+PASS test/auth.service.spec.ts
+
+Test Suites: 4 passed, 4 total
+Tests:       6 passed, 6 total
+Snapshots:   0 total
+Time:        3.631 s
+Ran all test suites.

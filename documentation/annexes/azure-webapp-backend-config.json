@@ -1,0 +1,5 @@
+{
+  "alwaysOn": false,
+  "appCommandLine": "node dist/main.js",
+  "linuxFxVersion": "NODE|22-lts"
+}

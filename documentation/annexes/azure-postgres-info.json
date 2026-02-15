@@ -1,0 +1,10 @@
+{
+  "backup": 7,
+  "fullyQualifiedDomainName": "petite-epouvante-pg.postgres.database.azure.com",
+  "location": "France Central",
+  "name": "petite-epouvante-pg",
+  "sku": "Standard_D2s_v3",
+  "state": "Ready",
+  "storage": 32,
+  "version": "16"
+}
