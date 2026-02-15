@@ -189,54 +189,68 @@ sequenceDiagram
 ```mermaid
 flowchart LR
   subgraph PLAN["📋 PLAN"]
-    P1["Modélisation des menaces"]
-    P2["Exigences sécurité\nOWASP Top 10"]
+    direction TB
+    P1[Modélisation menaces]
+    P2[OWASP Top 10]
+    P1 --> P2
   end
 
   subgraph CODE["💻 CODE"]
-    C1["TypeScript strict"]
-    C2["ValidationPipe\nwhitelist + forbid"]
-    C3["bcrypt (hash)\nJWT (auth)"]
-    C4["Prisma ORM\n(pas de SQL brut)"]
+    direction TB
+    C1[TypeScript strict]
+    C2[ValidationPipe]
+    C3[bcrypt + JWT]
+    C4[Prisma ORM]
+    C1 --> C2 --> C3 --> C4
   end
 
   subgraph BUILD["🏗️ BUILD"]
-    B1["npm ci\n(lockfile exact)"]
-    B2["tsc --strict\n(type checking)"]
+    direction TB
+    B1[npm ci]
+    B2[tsc --strict]
+    B1 --> B2
   end
 
   subgraph TEST["🧪 TEST"]
-    T1["Tests unitaires\nJest (AuthService,\nProducts, Orders,\nRecommendations)"]
-    T2["Tests E2E\nSupertest\n(Auth, Products,\nHealth)"]
+    direction TB
+    T1[Tests Jest]
+    T2[Tests E2E]
+    T1 --> T2
   end
 
   subgraph RELEASE["📦 RELEASE"]
-    R1["npm prune\n--omit=dev"]
-    R2["Quality Gate\nCI verte obligatoire"]
+    direction TB
+    R1[npm prune]
+    R2[Quality Gate]
+    R1 --> R2
   end
 
   subgraph DEPLOY["☁️ DEPLOY"]
-    D1["Azure App Service\nNode 22 LTS"]
-    D2["Secrets GitHub\n→ Azure App Settings"]
-    D3["Prisma migrate\ndeploy (prod)"]
+    direction TB
+    D1[Azure App Service]
+    D2[Secrets injection]
+    D3[Prisma migrate]
+    D1 --> D2 --> D3
   end
 
   subgraph OPERATE["🔒 OPERATE"]
-    O1["Helmet\n(11 headers)"]
-    O2["CORS restrictif\n(whitelist)"]
-    O3["Rate limiting\n(Throttler)"]
-    O4["HSTS + TLS 1.2"]
-    O5["/health\n(observabilité)"]
+    direction TB
+    O1[Helmet headers]
+    O2[CORS + Rate limit]
+    O3[HSTS + TLS]
+    O1 --> O2 --> O3
   end
 
   subgraph MONITOR["📊 MONITOR"]
-    M1["Application Insights"]
-    M2["/health → DB check"]
-    M3["Logs Azure"]
+    direction TB
+    M1[App Insights]
+    M2[Health checks]
+    M3[Logs Azure]
+    M1 --> M2 --> M3
   end
 
   PLAN --> CODE --> BUILD --> TEST --> RELEASE --> DEPLOY --> OPERATE --> MONITOR
-  MONITOR -.->|"Feedback loop"| PLAN
+  MONITOR -.->|"Feedback"| PLAN
 
   style PLAN fill:#1e1b4b,stroke:#818cf8,stroke-width:2px,color:#e0e7ff
   style CODE fill:#172554,stroke:#60a5fa,stroke-width:2px,color:#dbeafe
