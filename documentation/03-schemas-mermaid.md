@@ -126,59 +126,30 @@ flowchart LR
 ```mermaid
 sequenceDiagram
   actor U as 👤 Utilisateur
-  participant F as Frontend React
-  participant H as Helmet + ThrottlerGuard
-  participant A as AuthController
-  participant S as AuthService
+  participant F as Frontend
+  participant API as Backend NestJS
   participant DB as PostgreSQL
-  participant JWT as JwtService
 
-  Note over U,JWT: ── Phase 1 : Inscription ──
-  U->>F: Saisit email, mot de passe, centres d'intérêt
-  F->>H: POST /auth/register
-  H->>H: Rate limit check (5 req/60s)
-  H->>A: ValidationPipe (whitelist + forbidNonWhitelisted)
-  A->>S: register(dto)
-  S->>DB: SELECT user WHERE email = ?
-  DB-->>S: null (email libre)
-  S->>S: bcrypt.hash(password, 10)
-  S->>DB: INSERT User + interests
-  DB-->>S: user créé
-  S->>JWT: sign({ sub, email, role }, secret, { expiresIn: '1h' })
-  JWT-->>S: accessToken
-  S-->>F: { accessToken, user: { id, email, role } }
-  Note over F: Stocke le token (localStorage)
+  Note over U,DB: ── Authentification ──
+  U->>F: Email + mot de passe
+  F->>API: POST /auth/login
+  API->>DB: Vérifie credentials (bcrypt)
+  DB-->>API: User validé
+  API-->>F: JWT { sub, email, role }
+  Note over F: Stocke token (localStorage)
 
-  Note over U,JWT: ── Phase 2 : Connexion ──
-  U->>F: Saisit email + mot de passe
-  F->>H: POST /auth/login
-  H->>H: Rate limit check (10 req/60s)
-  H->>A: ValidationPipe
-  A->>S: login(dto)
-  S->>DB: SELECT user WHERE email = ?
-  DB-->>S: user (avec hash)
-  S->>S: bcrypt.compare(password, hash)
-  S->>JWT: sign({ sub: userId, email, role })
-  JWT-->>S: accessToken
-  S-->>F: { accessToken, user: { id, email, role: ADMIN|USER } }
+  Note over U,DB: ── Requête protégée ──
+  F->>API: POST /products + Bearer token
+  API->>API: JwtAuthGuard (vérifie signature)
+  API->>API: RolesGuard (vérifie @Roles)
 
-  Note over U,JWT: ── Phase 3 : Accès protégé (ex: POST /products) ──
-  F->>H: POST /products + Authorization: Bearer <token>
-  H->>H: Helmet headers + global throttle (100/60s)
-  Note over H: JwtAuthGuard
-  H->>H: ExtractJwt.fromAuthHeaderAsBearerToken()
-  H->>H: Verify signature + expiration
-  H->>H: validate() → { userId, email, role }
-  Note over H: RolesGuard
-  H->>H: @Roles('ADMIN') → user.role === 'ADMIN' ?
-  alt role = ADMIN
-    H->>A: ✅ Requête autorisée → Controller
-    A->>DB: INSERT Product
+  alt ✅ ADMIN
+    API->>DB: INSERT Product
     DB-->>F: 201 Created
-  else role = USER
-    H-->>F: ❌ 403 Forbidden
-  else pas de token
-    H-->>F: ❌ 401 Unauthorized
+  else ❌ USER
+    API-->>F: 403 Forbidden
+  else ❌ Pas de token
+    API-->>F: 401 Unauthorized
   end
 ```
 
