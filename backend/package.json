@@ -8,6 +8,7 @@
     "build": "tsc -p tsconfig.build.json",
     "start:prod": "node dist/main.js",
     "test": "jest",
+    "test:cov": "jest --coverage",
     "test:watch": "jest --watch",
     "test:e2e": "jest --config jest-e2e.config.cjs",
     "prisma:generate": "prisma generate",

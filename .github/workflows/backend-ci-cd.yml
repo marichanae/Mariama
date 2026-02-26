@@ -40,6 +40,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for SonarCloud
 
       - name: Use Node.js 22
         uses: actions/setup-node@v4
@@ -57,14 +59,22 @@ jobs:
       - name: Generate Prisma client
         run: npm run prisma:generate
 
-      - name: Run unit tests
-        run: npm test
+      - name: Run unit tests with coverage
+        run: npm run test:cov
 
       - name: Run e2e tests
         run: npm run test:e2e
 
       - name: Build
         run: npm run build
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectBaseDir: backend
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   deploy:
     needs: build-and-test
